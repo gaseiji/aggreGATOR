@@ -2,6 +2,7 @@ package config
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 )
 
@@ -32,4 +33,30 @@ func ReadConfigFile() (Config, error) {
 		return Config{}, err
 	}
 	return configStruct, nil
+}
+
+func SetUser(user string) {
+	configStruct, err := ReadConfigFile()
+	if err != nil {
+		return
+	}
+	configStruct.CurrentUserName = user
+	write(configStruct)
+	fmt.Println("Config File re-writed with User")
+}
+
+func write(cfg Config) error {
+	jsondata, err := json.Marshal(cfg)
+	if err != nil {
+		return err
+	}
+	filepath, err := getConfigFilePath()
+	if err != nil {
+		return err
+	}
+	err = os.WriteFile(filepath, jsondata, 0644)
+	if err != nil {
+		return err
+	}
+	return nil
 }

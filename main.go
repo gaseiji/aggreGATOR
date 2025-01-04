@@ -8,6 +8,11 @@ import (
 
 func main() {
 	configStruct, err := config.ReadConfigFile()
+
+	config.SetUser("Gabriel")
+
+	configStruct, err = config.ReadConfigFile()
+
 	if err != nil {
 		log.Fatalf("Error reading json config file %v", err)
 	}
