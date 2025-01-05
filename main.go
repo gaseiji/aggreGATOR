@@ -3,9 +3,13 @@ package main
 import (
 	"aggregator/internal/command"
 	"aggregator/internal/config"
+	"aggregator/internal/database"
 	"aggregator/internal/state"
+	"database/sql"
 	"log"
 	"os"
+
+	_ "github.com/lib/pq"
 )
 
 func main() {
@@ -15,13 +19,21 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error reading json config file %v", err)
 	}
-
 	st.Cfg = &configFile
 
+	db, err := sql.Open("postgres", st.Cfg.DbUrl)
+	if err != nil {
+		log.Fatal("Error opening database connection:", err)
+	}
+	if err := db.Ping(); err != nil {
+		log.Fatal("Error pinging the database:", err)
+	}
+
+	dbQueries := database.New(db)
+	st.Db = dbQueries
+
 	var cmdsStruct command.Commands
-
 	cmdsStruct.Handlers = make(map[string]func(*state.State, command.Command) error)
-
 	cmdsStruct.Register("login", command.HandlerLogin)
 
 	if len(os.Args) < 2 {
@@ -42,7 +54,5 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error executing command: %v", err)
 	}
-
-	//fmt.Printf("db:%s current user:%s\n", configStruct.DbUrl, configStruct.CurrentUserName)
 
 }
