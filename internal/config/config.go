@@ -35,14 +35,15 @@ func ReadConfigFile() (Config, error) {
 	return configStruct, nil
 }
 
-func SetUser(user string) {
+func (c *Config) SetUser(user string) error {
 	configStruct, err := ReadConfigFile()
 	if err != nil {
-		return
+		return err
 	}
 	configStruct.CurrentUserName = user
 	write(configStruct)
-	fmt.Println("Config File re-writed with User")
+	fmt.Println("User set sucessfully")
+	return nil
 }
 
 func write(cfg Config) error {
