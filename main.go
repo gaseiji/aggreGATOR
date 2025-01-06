@@ -36,6 +36,7 @@ func main() {
 	cmdsStruct.Handlers = make(map[string]func(*state.State, command.Command) error)
 	cmdsStruct.Register("login", command.HandlerLogin)
 	cmdsStruct.Register("register", command.HandlerRegister)
+	cmdsStruct.Register("reset", command.HandlerResetDb)
 
 	if len(os.Args) < 2 {
 		log.Fatalf("not enough arguments to execute. %v", err)

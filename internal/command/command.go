@@ -35,6 +35,16 @@ func HandlerLogin(s *state.State, cmd Command) error {
 	return nil
 }
 
+func HandlerResetDb(s *state.State, cmd Command) error {
+	err := s.Db.DeleteUsersInfo(context.Background())
+	if err != nil {
+		return err
+	}
+	fmt.Println("Users table reseted")
+	return nil
+
+}
+
 func HandlerRegister(s *state.State, cmd Command) error {
 	if len(cmd.Args) == 0 {
 		return fmt.Errorf("no argments")
