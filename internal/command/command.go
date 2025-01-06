@@ -42,7 +42,22 @@ func HandlerResetDb(s *state.State, cmd Command) error {
 	}
 	fmt.Println("Users table reseted")
 	return nil
+}
 
+func HandlerUsers(s *state.State, cmd Command) error {
+	usersName, err := s.Db.GetUsers(context.Background())
+	if err != nil {
+		return err
+	}
+
+	for _, name := range usersName {
+		if s.Cfg.CurrentUserName == name {
+			name = name + " (current)"
+		}
+		println(name)
+	}
+
+	return nil
 }
 
 func HandlerRegister(s *state.State, cmd Command) error {
