@@ -2,9 +2,11 @@ package command
 
 import (
 	"aggregator/internal/database"
+	"aggregator/internal/rss"
 	"aggregator/internal/state"
 	"context"
 	"fmt"
+	"html"
 	"time"
 
 	"github.com/google/uuid"
@@ -41,6 +43,28 @@ func HandlerResetDb(s *state.State, cmd Command) error {
 		return err
 	}
 	fmt.Println("Users table reseted")
+	return nil
+}
+
+func HanderAgg(s *state.State, cmd Command) error {
+	newRssFeed, err := rss.FetchFeed(context.Background(), "https://www.wagslane.dev/index.xml")
+	if err != nil {
+		return err
+	}
+
+	for _, v := range newRssFeed.Channel.Item {
+
+		fmt.Printf("RssItem Title:")
+		fmt.Println(html.UnescapeString(v.Title))
+		fmt.Printf("RssItem Link:")
+		fmt.Println(v.Link)
+		fmt.Printf("RssItem Description:")
+		fmt.Println(html.UnescapeString(v.Description))
+		fmt.Printf("RssItem PubDate:")
+		fmt.Println(v.PubDate[:16])
+		fmt.Printf("\n\n")
+	}
+	fmt.Println()
 	return nil
 }
 
