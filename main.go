@@ -39,6 +39,7 @@ func main() {
 	cmdsStruct.Register("reset", command.HandlerResetDb)
 	cmdsStruct.Register("users", command.HandlerUsers)
 	cmdsStruct.Register("agg", command.HanderAgg)
+	cmdsStruct.Register("addfeed", command.HanderAddFeed)
 
 	if len(os.Args) < 2 {
 		log.Fatalf("not enough arguments to execute. %v", err)

@@ -5,6 +5,7 @@ import (
 	"aggregator/internal/rss"
 	"aggregator/internal/state"
 	"context"
+	"errors"
 	"fmt"
 	"html"
 	"time"
@@ -65,6 +66,39 @@ func HanderAgg(s *state.State, cmd Command) error {
 		fmt.Printf("\n\n")
 	}
 	fmt.Println()
+	return nil
+}
+
+func HanderAddFeed(s *state.State, cmd Command) error {
+	//add a feed to the current logged user
+	//check if there is 2 args
+	if len(cmd.Args) != 2 {
+		return errors.New("incorrect number of arguments, expected 2")
+	}
+
+	// fetch user id
+	curruser, err := s.Db.GetUser(context.Background(), s.Cfg.CurrentUserName)
+	if err != nil {
+		// Handle the error (e.g., user not found)
+	}
+
+	//set feed params
+	feedparams := database.CreateFeedParams{
+		ID:        uuid.New(),
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+		Name:      cmd.Args[0],
+		Url:       cmd.Args[1],
+		UserID:    curruser.ID,
+	}
+
+	//add to database
+	newFeed, err := s.Db.CreateFeed(context.Background(), feedparams)
+	if err != nil {
+		return err
+	}
+	logFeedData(newFeed)
+
 	return nil
 }
 
@@ -131,4 +165,8 @@ func (c *Commands) Run(s *state.State, cmd Command) error {
 
 func logUserData(createduser database.User) {
 	fmt.Printf("ID: %v \nCreatedAt: %v\nUpdatedAt: %v\nName: %v\n", createduser.ID, createduser.CreatedAt, createduser.UpdatedAt, createduser.Name)
+}
+
+func logFeedData(data database.Feed) {
+	fmt.Printf("ID: %v \nCreatedAt: %v\nUpdatedAt: %v\nName: %v\nUrl: %v\nUserID: %v\n", data.ID, data.CreatedAt, data.UpdatedAt, data.Name, data.Url, data.UserID)
 }
