@@ -38,6 +38,24 @@ func HandlerLogin(s *state.State, cmd Command) error {
 	return nil
 }
 
+func HandlerListFeeds(s *state.State, cmd Command) error {
+
+	feeds, err := s.Db.GetFeeds(context.Background())
+	if err != nil {
+		return err
+	}
+	for _, v := range feeds {
+		fmt.Printf("feed Name: %v\n", v.Name)
+		fmt.Printf("feed Url: %v\n", v.Url)
+		if v.UserName.Valid {
+			fmt.Printf("feed UserName: %v\n", v.UserName.String)
+		} else {
+			fmt.Printf("feed UserName: NULL\n")
+		}
+	}
+	return nil
+}
+
 func HandlerResetDb(s *state.State, cmd Command) error {
 	err := s.Db.DeleteUsersInfo(context.Background())
 	if err != nil {
