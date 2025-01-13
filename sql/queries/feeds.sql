@@ -18,3 +18,14 @@ SELECT
 FROM feeds
 LEFT JOIN users
     ON feeds.user_id = users.id;
+
+-- name: GetFeed :one
+SELECT
+    id,
+    created_at,
+    updated_at,
+    name,
+    url,
+    user_id
+FROM feeds
+WHERE url = $1 LIMIT 1;

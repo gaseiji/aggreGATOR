@@ -22,6 +22,17 @@ type Command struct {
 	Args []string
 }
 
+func MiddlewareLoggedIn(handler func(s *state.State, cmd Command, user database.User) error) func(*state.State, Command) error {
+	return func(s *state.State, cmd Command) error {
+		user, err := s.Db.GetUser(context.Background(), s.Cfg.CurrentUserName)
+		if err != nil {
+			return err
+		}
+
+		return handler(s, cmd, user)
+	}
+}
+
 func HandlerLogin(s *state.State, cmd Command) error {
 
 	if len(cmd.Args) == 0 {
@@ -33,6 +44,70 @@ func HandlerLogin(s *state.State, cmd Command) error {
 	err := s.Cfg.SetUser(cmd.Args[0])
 	if err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func HandlerFollow(s *state.State, cmd Command, user database.User) error {
+	if len(cmd.Args) != 1 {
+		return errors.New("incorrect number of arguments, expected 1")
+	}
+
+	totalFeeds, err := s.Db.GetFeeds(context.Background())
+	if err != nil {
+		return err
+	}
+
+	valid := false
+
+	for _, v := range totalFeeds {
+		if v.Url == cmd.Args[0] {
+			valid = true
+		}
+	}
+
+	if !valid {
+		return errors.New("Url not found, please create a new feed using `addfedd` cmd or check mispelling Url")
+	} else {
+
+		curfeed, err := s.Db.GetFeed(context.Background(), cmd.Args[0])
+		if err != nil {
+			return err
+		}
+
+		newFeedFollowParams := database.CreateFeedFollowParams{
+			ID:        uuid.New(),
+			CreatedAt: time.Now(),
+			UpdatedAt: time.Now(),
+			UserID:    user.ID,
+			FeedID:    curfeed.ID,
+		}
+
+		followReturn, err := s.Db.CreateFeedFollow(context.Background(), newFeedFollowParams)
+		logFollowData(followReturn)
+	}
+
+	return nil
+}
+
+func HandlerFollowing(s *state.State, cmd Command, user database.User) error {
+	if len(cmd.Args) != 0 {
+		return errors.New("Invalid number of arguments, expecting none")
+	}
+
+	gotFeedFollows, err := s.Db.GetFeedFollowsForUser(context.Background(), user.Name)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("User: %v\n", user.Name)
+	fmt.Printf("Following:\n")
+
+	for _, v := range gotFeedFollows {
+
+		fmt.Printf("%v\n", v.FeedNames)
+
 	}
 
 	return nil
@@ -87,17 +162,11 @@ func HanderAgg(s *state.State, cmd Command) error {
 	return nil
 }
 
-func HanderAddFeed(s *state.State, cmd Command) error {
+func HanderAddFeed(s *state.State, cmd Command, user database.User) error {
 	//add a feed to the current logged user
 	//check if there is 2 args
 	if len(cmd.Args) != 2 {
 		return errors.New("incorrect number of arguments, expected 2")
-	}
-
-	// fetch user id
-	curruser, err := s.Db.GetUser(context.Background(), s.Cfg.CurrentUserName)
-	if err != nil {
-		// Handle the error (e.g., user not found)
 	}
 
 	//set feed params
@@ -107,7 +176,7 @@ func HanderAddFeed(s *state.State, cmd Command) error {
 		UpdatedAt: time.Now(),
 		Name:      cmd.Args[0],
 		Url:       cmd.Args[1],
-		UserID:    curruser.ID,
+		UserID:    user.ID,
 	}
 
 	//add to database
@@ -116,6 +185,17 @@ func HanderAddFeed(s *state.State, cmd Command) error {
 		return err
 	}
 	logFeedData(newFeed)
+
+	newFeedFollowParams := database.CreateFeedFollowParams{
+		ID:        uuid.New(),
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+		UserID:    user.ID,
+		FeedID:    newFeed.ID,
+	}
+
+	followReturn, err := s.Db.CreateFeedFollow(context.Background(), newFeedFollowParams)
+	logFollowData(followReturn)
 
 	return nil
 }
@@ -187,4 +267,8 @@ func logUserData(createduser database.User) {
 
 func logFeedData(data database.Feed) {
 	fmt.Printf("ID: %v \nCreatedAt: %v\nUpdatedAt: %v\nName: %v\nUrl: %v\nUserID: %v\n", data.ID, data.CreatedAt, data.UpdatedAt, data.Name, data.Url, data.UserID)
+}
+
+func logFollowData(data database.CreateFeedFollowRow) {
+	fmt.Printf("ID: %v \nCreatedAt: %v\nUpdatedAt: %v\nUserID: %v\nFeedID: %v\n", data.ID, data.CreatedAt, data.UpdatedAt, data.UserID, data.FeedID)
 }

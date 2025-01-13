@@ -39,8 +39,10 @@ func main() {
 	cmdsStruct.Register("reset", command.HandlerResetDb)
 	cmdsStruct.Register("users", command.HandlerUsers)
 	cmdsStruct.Register("agg", command.HanderAgg)
-	cmdsStruct.Register("addfeed", command.HanderAddFeed)
+	cmdsStruct.Register("addfeed", command.MiddlewareLoggedIn(command.HanderAddFeed))
 	cmdsStruct.Register("feeds", command.HandlerListFeeds)
+	cmdsStruct.Register("follow", command.MiddlewareLoggedIn(command.HandlerFollow))
+	cmdsStruct.Register("following", command.MiddlewareLoggedIn(command.HandlerFollowing))
 
 	if len(os.Args) < 2 {
 		log.Fatalf("not enough arguments to execute. %v", err)
