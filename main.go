@@ -43,6 +43,7 @@ func main() {
 	cmdsStruct.Register("feeds", command.HandlerListFeeds)
 	cmdsStruct.Register("follow", command.MiddlewareLoggedIn(command.HandlerFollow))
 	cmdsStruct.Register("following", command.MiddlewareLoggedIn(command.HandlerFollowing))
+	cmdsStruct.Register("unfollow", command.MiddlewareLoggedIn(command.HandlerUnFollow))
 
 	if len(os.Args) < 2 {
 		log.Fatalf("not enough arguments to execute. %v", err)

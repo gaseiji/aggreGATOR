@@ -91,6 +91,45 @@ func HandlerFollow(s *state.State, cmd Command, user database.User) error {
 	return nil
 }
 
+func HandlerUnFollow(s *state.State, cmd Command, user database.User) error {
+	if len(cmd.Args) != 1 {
+		return errors.New("Invalid number of arguments, expecting 1")
+	}
+
+	totalFeeds, err := s.Db.GetFeeds(context.Background())
+	if err != nil {
+		return err
+	}
+
+	valid := false
+
+	for _, v := range totalFeeds {
+		if v.Url == cmd.Args[0] {
+			valid = true
+		}
+	}
+
+	if !valid {
+		return errors.New("Url not found, please create a new feed using `addfedd` cmd or check mispelling Url")
+	} else {
+
+		params := database.DeleteFeedFollowParams{
+			Url:    cmd.Args[0],
+			UserID: user.ID,
+		}
+
+		err := s.Db.DeleteFeedFollow(context.Background(), params)
+		if err != nil {
+			return err
+		}
+
+		fmt.Println("Unfollow executed sucessfully")
+
+	}
+
+	return nil
+}
+
 func HandlerFollowing(s *state.State, cmd Command, user database.User) error {
 	if len(cmd.Args) != 0 {
 		return errors.New("Invalid number of arguments, expecting none")
