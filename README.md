@@ -1,6 +1,6 @@
 # aggreGATOR CLI
 
-aggreGATOR is a command-line tool designed to interact with your database, handle migrations, and perform other necessary tasks related to your project. This tool is written in Go and uses Postgres as the backend database. 
+aggreGATOR is a command-line tool designed to interact with your database, handle migrations, and perform other necessary tasks related to your project. This tool is written in Go and uses Postgres as the backend database.
 
 > **Note**: This project is part of an exercise from Boot.dev.
 
@@ -17,6 +17,7 @@ To install the aggreGATOR CLI, run the following command:
 
 ```bash
 go install github.com/gaseiji/aggreGATOR@latest
+
 
 ## Configuration
 
