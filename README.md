@@ -17,3 +17,13 @@ To install the aggreGATOR CLI, run the following command:
 
 ```bash
 go install github.com/gaseiji/aggreGATOR@latest
+
+## Configuration
+
+Before running the application, you need to create a `.gatorconfig.json` file in the root directory of the project. This file should contain the following structure:
+
+```json
+{
+  "db_url": "postgres://<username>:<password>@localhost:<port>/<dbname>?sslmode=disable",
+  "current_user_name": "<username>"
+}
