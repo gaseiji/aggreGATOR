@@ -17,7 +17,7 @@ To install the aggreGATOR CLI, run the following command:
 
 ```bash
 go install github.com/gaseiji/aggreGATOR@latest
-
+```
 
 ## Configuration
 
