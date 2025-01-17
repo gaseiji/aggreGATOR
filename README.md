@@ -33,7 +33,7 @@ Before running the application, you need to migrate the database schemas using *
 ```bash
 goose -dir ./sql/schema postgres "<your-database-url>" up
 ```
-Replace <your-database-url> with the appropriate connection URL to your Postgres database.
+Replace `<your-database-url>` with the appropriate connection URL to your Postgres database.
 
 3. **Generated Code**: The application uses sqlc to generate the database access code. Since this code is already generated and committed to the repository, you do not need to regenerate it. The generated code is located in the internal/database directory, and it will be used automatically when you run the application.
 
@@ -53,9 +53,9 @@ Before running the application, you need to create a `.gatorconfig.json` file in
 Replace the placeholders with your actual database connection details:
 
 `<username>`: Your database username.
-<password>: Your database password.
-<port>: The port your PostgreSQL instance is running on (usually 5432).
-<dbname>: The name of your database.
+`<password>`: Your database password.
+`<port>`: The port your PostgreSQL instance is running on (usually 5432).
+`<dbname>`: The name of your database.
 
 ## Available Commands
 
