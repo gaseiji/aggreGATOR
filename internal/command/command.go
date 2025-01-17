@@ -337,6 +337,12 @@ func (c *Commands) Register(name string, f func(*state.State, Command) error) {
 }
 
 func (c *Commands) Run(s *state.State, cmd Command) error {
+
+	_, exists := c.Handlers[cmd.Name]
+	if !exists {
+		return fmt.Errorf("command '%s' not found", cmd.Name) // Return error if command is not found
+	}
+
 	err := c.Handlers[cmd.Name](s, cmd)
 	if err != nil {
 		return err
