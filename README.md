@@ -52,7 +52,7 @@ Before running the application, you need to create a `.gatorconfig.json` file in
 
 Replace the placeholders with your actual database connection details:
 
-<username>: Your database username.
+`<username>`: Your database username.
 <password>: Your database password.
 <port>: The port your PostgreSQL instance is running on (usually 5432).
 <dbname>: The name of your database.
@@ -79,5 +79,5 @@ Once installed, you can run commands through the CLI. For example, to log in wit
 ```bash
 aggregator login <username>
 ```
-Replace <username> with your desired credentials.
+Replace `<username>` with your desired credentials.
 
