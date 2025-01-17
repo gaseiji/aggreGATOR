@@ -1,5 +1,5 @@
 # Ignore config file
-gatorconfig.json
+.gatorconfig.json
 
 # Ignore log files
 *.log
