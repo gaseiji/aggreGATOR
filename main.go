@@ -44,6 +44,7 @@ func main() {
 	cmdsStruct.Register("follow", command.MiddlewareLoggedIn(command.HandlerFollow))
 	cmdsStruct.Register("following", command.MiddlewareLoggedIn(command.HandlerFollowing))
 	cmdsStruct.Register("unfollow", command.MiddlewareLoggedIn(command.HandlerUnFollow))
+	cmdsStruct.Register("browser", command.MiddlewareLoggedIn(command.HandlerBrowser))
 
 	if len(os.Args) < 2 {
 		log.Fatalf("not enough arguments to execute. %v", err)
