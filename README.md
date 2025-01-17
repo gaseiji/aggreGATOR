@@ -50,6 +50,13 @@ Before running the application, you need to create a `.gatorconfig.json` file in
 }
 ```
 
+Replace the placeholders with your actual database connection details:
+
+<username>: Your database username.
+<password>: Your database password.
+<port>: The port your PostgreSQL instance is running on (usually 5432).
+<dbname>: The name of your database.
+
 ## Available Commands
 
 Once the setup is complete, you can use the following commands:
@@ -65,3 +72,12 @@ Once the setup is complete, you can use the following commands:
 - **following**: View the feeds you're following (requires login). Example usage: `aggregator following`
 - **unfollow**: Unfollow a feed (requires login). Example usage: `aggregator unfollow <feed_id>`
 - **browser**: Open the browser to view the aggregated content (requires login). Example usage: `aggregator browser`
+
+## Running a Command
+Once installed, you can run commands through the CLI. For example, to log in with a username
+
+```bash
+aggregator login <username>
+```
+Replace <username> with your desired credentials.
+
